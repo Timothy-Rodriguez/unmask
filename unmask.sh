@@ -18,12 +18,13 @@ while getopts f: aflag; do
 		f) while IFS=' ' read -r line
 			
 			do
-				wget -q --tries=10 --timeout=20 --spider https://www.google.com
-				if [[ $? -eq 0 ]]; then
+				wget -q --tries=10 --timeout=10 --spider https://www.google.com
+				if [[ $? -eq 0 ]];
+				then
 					
 				        val=$(timeout 5 curl -I "$line" 2>&1 | awk '/HTTP\// {print $2}')
 	
-					if [[ "$val" -eq '404.txt' ]];
+					if [[ "$val" -eq '404' ]];
 					then
 					echo -e "\e[92m\e[1m$line\e[0m"
 					echo -e "[*]$line" >> main.txt
@@ -32,7 +33,7 @@ while getopts f: aflag; do
 					echo "   Host Lookup: "
 					h=$(host $line)
 					echo "$h" | sed 's/^/   /' | tee -a main.txt 404.txt
-					cname=$(dig $line CNAME | sed '14,14!d' | awk '{ print $5 " " $6 " " $7 " " $8}')
+					cname=$(dig $line CNAME | sed '15,15!d' | awk '{ print $5 " " $6 " " $7 " " $8}')
 					echo "   CNAME : $cname" | tee -a main.txt 404.txt
 					nx=$(dig $line CNAME | sed '5,5!d' | awk '{ print $5 $6}' | tr ',' ' ')
 					echo "  $nx" | tee -a main.txt 404.txt
@@ -40,7 +41,7 @@ while getopts f: aflag; do
 					sleep 0.2			
 	
 	
-					elif [[ "$val" -ge '400.txt' && "$val" -le '469' ]];
+					elif [[ "$val" -ge '400' && "$val" -le '469' ]];
 					then
 					echo -e "\e[92m\e[1m$line\e[0m"
 					echo -e "[*]$line" >> main.txt
@@ -49,7 +50,7 @@ while getopts f: aflag; do
 					echo "   Host Lookup: "
 					h=$(host $line)
 					echo "$h" | sed 's/^/   /' | tee -a main.txt 400.txt
-					cname=$(dig $line CNAME | sed '14,14!d' | awk '{ print $5 " " $6 " " $7 " " $8}')
+					cname=$(dig $line CNAME | sed '15,15!d' | awk '{ print $5 " " $6 " " $7 " " $8}')
 					echo "   CNAME : $cname"
 					nx=$(dig $line CNAME | sed '5,5!d' | awk '{ print $5 $6}' | tr ',' ' ')
 					echo "$nx" | tee -a main.txt 400.txt
@@ -70,12 +71,12 @@ while getopts f: aflag; do
 					echo -e "[*]$line" >> main.txt
 					echo -e "[*]$line" >> other_status_code.txt
 					echo "   Response code : $val" | tee -a main.txt other_status_code.txt
-					cname=$(dig $line CNAME | sed '14,14!d' | awk '{ print $5 " " $6 " " $7 " " $8}')
+					cname=$(dig $line CNAME | sed '15,15!d' | awk '{ print $5 " " $6 " " $7 " " $8}')
 					echo "   CNAME : $cname" | tee -a main.txt other_status_code.txt
 					echo "   Host Lookup: "
 					h=$(host $line)
 					echo "$h" | sed 's/^/   /' | tee -a main.txt other_status_code.txt
-					nx=$(dig $line CNAME | sed '5,5!d' | awk '{ print $5 $6}' | tr ',' ' ')
+					nx=$(dig $line CNAME | sed '15,15!d' | awk '{ print $5 $6}' | tr ',' ' ')
 					echo "    $nx" | tee -a main.txt other_status_code.txt
 					printf "\n" | tee -a main.txt other_status_code.txt
 					sleep 0.2
@@ -88,11 +89,6 @@ while getopts f: aflag; do
 					exit
         
 				fi
-
-					
-					
-				
-
 				
 			done < $OPTARG;;
 		
